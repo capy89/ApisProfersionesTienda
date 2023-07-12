@@ -9,11 +9,11 @@ namespace Api.Controllers
 {
     public class ProductosController : BaseApiController
     {
-        public IProductoRepository _productoRepository { get; }
+        private readonly IUnitOfWork _unitOfWork;
         
-        public ProductosController(IProductoRepository productoRepository)
+        public ProductosController(IUnitOfWork unitOfWork)
         {
-            _productoRepository = productoRepository;
+            _unitOfWork = unitOfWork;
         }
 
 
@@ -22,7 +22,7 @@ namespace Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<Producto>>> Get()
         {
-            var productos = await _productoRepository.GetAllAsync();
+            var productos = await _unitOfWork.Productos.GetAllAsync();
 
             return Ok(productos);
 
@@ -34,7 +34,7 @@ namespace Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> Get(int id)
         {
-            var producto = await _productoRepository.GetByIdAsync(id);
+            var producto = await _unitOfWork.Productos.GetByIdAsync(id);
 
             return Ok(producto);
 
