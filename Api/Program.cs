@@ -8,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.ConfigureCors();
 
+builder.Services.AddAplicationServices();
+
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<TiendaContext>(options =>

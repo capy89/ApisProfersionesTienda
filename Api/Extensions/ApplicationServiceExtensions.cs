@@ -1,4 +1,7 @@
-﻿namespace Api.Extensions
+﻿using Core.Interfaces;
+using Infrastructure.Repositories;
+
+namespace Api.Extensions
 {
     public static class ApplicationServiceExtensions
     {
@@ -10,5 +13,14 @@
                  .AllowAnyMethod()       //WithMethods("GET","POST")
                  .AllowAnyHeader());     //WithHeaders("accept","content-type")
             });
+
+
+        public static void AddAplicationServices(this IServiceCollection services)
+        {
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IProductoRepository, ProductoRepository>();
+            services.AddScoped<IMarcaRepository, MarcaRepository>();
+            services.AddScoped<ICategoriaRepository, CategoriaRepository>();
+        }
     }
 }

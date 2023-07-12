@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    internal class MarcaRepository : GenericRepository<Marca>, IMarcaRepository
+    public class MarcaRepository : GenericRepository<Marca>, IMarcaRepository
     {
         public MarcaRepository(TiendaContext context) : base(context)
         {

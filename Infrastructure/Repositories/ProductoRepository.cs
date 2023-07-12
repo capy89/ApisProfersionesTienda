@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public class ProductosRepository : GenericRepository<Producto>, IProductoRepository
+    public class ProductoRepository : GenericRepository<Producto>, IProductoRepository
     {
-        public ProductosRepository(TiendaContext context) :base(context)
+        public ProductoRepository(TiendaContext context) :base(context)
         {
             
         }
