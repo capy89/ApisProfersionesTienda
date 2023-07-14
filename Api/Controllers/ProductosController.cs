@@ -59,7 +59,7 @@ namespace Api.Controllers
         public async Task<ActionResult<Producto>> Post(Producto producto)
         {
             _unitOfWork.Productos.Add(producto);
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsync();
 
             if (producto == null)
             {
@@ -80,7 +80,7 @@ namespace Api.Controllers
                 return NotFound();
 
             _unitOfWork.Productos.Update(producto);
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsync();
 
 
             return producto;
@@ -99,7 +99,7 @@ namespace Api.Controllers
                 return NotFound();
 
             _unitOfWork.Productos.Remove(producto);
-            _unitOfWork.Save();
+            await _unitOfWork.SaveAsync();
 
 
             return NoContent();
