@@ -22,5 +22,14 @@ namespace Infrastructure.Repositories
             .OrderByDescending(p => p.Precio)
             .Take(cantidad)
             .ToListAsync();
+
+
+        public override async Task<Producto> GetByIdAsync(int id)
+        {
+            return await _context.Productos
+                .Include(p => p.Marca)
+                .Include(p => p.Categoria)
+                .FirstOrDefaultAsync(p => p.Id == id);
+        }
     }
 }
