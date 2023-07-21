@@ -23,6 +23,7 @@ namespace Api.Controllers
 
 
         [HttpGet]
+        [ApiVersion("1.0")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<IEnumerable<ProductoListDto>>> Get()
@@ -35,6 +36,22 @@ namespace Api.Controllers
 
 
         }
+
+        [HttpGet]
+        [ApiVersion("1.1")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<IEnumerable<ProductoDto>>> Get11()
+        {
+            var productos = await _unitOfWork.Productos.GetAllAsync();
+
+
+
+            return _automaper.Map<List<ProductoDto>>(productos);
+
+
+        }
+
 
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
