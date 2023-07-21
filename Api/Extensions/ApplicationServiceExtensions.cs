@@ -60,7 +60,11 @@ namespace Api.Extensions
                 options.DefaultApiVersion = new ApiVersion(1, 0);
                 options.AssumeDefaultVersionWhenUnspecified = true;
                 //options.ApiVersionReader = new QueryStringApiVersionReader("ver");
-                options.ApiVersionReader = new HeaderApiVersionReader("X-Version");
+                //options.ApiVersionReader = new HeaderApiVersionReader("X-Version");
+                options.ApiVersionReader = ApiVersionReader.Combine(
+                    new QueryStringApiVersionReader("ver"),
+                    new HeaderApiVersionReader("X-Version")
+                    );
                 options.ReportApiVersions = true;
             });
         }
