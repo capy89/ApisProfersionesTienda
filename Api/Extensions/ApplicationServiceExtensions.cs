@@ -2,6 +2,7 @@
 using Core.Interfaces;
 using Infrastructure.Repositories;
 using Infrastructure.UnitOfWork;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Extensions
 {
@@ -49,5 +50,16 @@ namespace Api.Extensions
                 };
             });
         }
+
+
+        public static void ConfigureApiVersioning(this IServiceCollection services)
+        {
+            services.AddApiVersioning(options =>
+            {
+                options.DefaultApiVersion = new ApiVersion(1, 0);
+                options.AssumeDefaultVersionWhenUnspecified = true;
+            });
+        }
+
     }
 }

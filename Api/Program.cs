@@ -10,6 +10,8 @@ builder.Services.AddAutoMapper(Assembly.GetEntryAssembly());
 
 builder.Services.ConfigureRateLimitation();
 
+builder.Services.ConfigureApiVersioning();
+
 // Add services to the container.
 
 builder.Services.ConfigureCors();
