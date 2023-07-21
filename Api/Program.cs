@@ -1,4 +1,5 @@
 using Api.Extensions;
+using AspNetCoreRateLimit;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -6,6 +7,8 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAutoMapper(Assembly.GetEntryAssembly());
+
+builder.Services.ConfigureRateLimitation();
 
 // Add services to the container.
 
@@ -26,6 +29,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseIpRateLimiting();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
