@@ -18,7 +18,11 @@ builder.Services.ConfigureCors();
 
 builder.Services.AddAplicationServices();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+ {
+     options.RespectBrowserAcceptHeader = true;
+     options.ReturnHttpNotAcceptable = true;
+ }).AddXmlSerializerFormatters();
 
 builder.Services.AddDbContext<TiendaContext>(options =>
 {
