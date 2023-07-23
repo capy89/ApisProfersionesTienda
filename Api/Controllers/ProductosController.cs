@@ -1,5 +1,6 @@
 ﻿
 using Api.Dtos;
+using Api.Helpers;
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces;
@@ -24,18 +25,35 @@ namespace Api.Controllers
         }
 
 
+        //[HttpGet]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //public async Task<ActionResult<IEnumerable<ProductoListDto>>> Get()
+        //{
+        //    var productos = await _unitOfWork.Productos.GetAllAsync();
+
+
+
+        //    return _automaper.Map<List<ProductoListDto>>(productos);
+
+
+        //}
+
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<IEnumerable<ProductoListDto>>> Get()
+        public async Task<ActionResult<Pager<ProductoListDto>>> Get([FromQuery] Params productParams)
         {
-            var productos = await _unitOfWork.Productos.GetAllAsync();
+            var result = await _unitOfWork.Productos.GetAllAsync(productParams.PageIndex,productParams.PageSize,productParams.Search);
 
 
+            var listProducts = _automaper.Map<List<ProductoListDto>>(result.registros);
 
-            return _automaper.Map<List<ProductoListDto>>(productos);
+            //Esto es para que en el encabezado aparesca información de la paginación, se puede agregar más información
+            Response.Headers.Add("X-InLineCount", result.totalRegistros.ToString());
 
-
+            return new Pager<ProductoListDto>(listProducts,result.totalRegistros,
+                productParams.PageIndex,productParams.PageSize,productParams.Search);
         }
 
         [HttpGet]
