@@ -13,6 +13,10 @@ namespace Core.Interfaces
         IMarcaRepository Marcas { get; }
 
         ICategoriaRepository Categorias { get; }
+        
+        IUsuarioRepository Usuarios { get; }
+        
+        IRolRepository Roles { get; }
 
         Task<int> SaveAsync();
     }
