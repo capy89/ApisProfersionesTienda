@@ -12,6 +12,8 @@ builder.Services.ConfigureRateLimitation();
 
 builder.Services.ConfigureApiVersioning();
 
+builder.Services.AddJwt(builder.Configuration);
+
 // Add services to the container.
 
 builder.Services.ConfigureCors();
@@ -69,6 +71,7 @@ app.UseCors("CorsPolicy");
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
