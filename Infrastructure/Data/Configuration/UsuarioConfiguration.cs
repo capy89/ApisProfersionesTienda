@@ -47,7 +47,7 @@ namespace Infrastructure.Data.Configuration
                 });
 
             builder
-                .HasMany(p => p.RefreshToken)
+                .HasMany(p => p.RefreshTokens)
                 .WithOne(p => p.Usuario)
                 .HasForeignKey(p => p.UsuarioId);
         }

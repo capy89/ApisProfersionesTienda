@@ -96,9 +96,9 @@ namespace Api.Services
                                                 .ToList();
                
                 
-                if(usuario.RefreshToken.Any(a => a.IsActive))
+                if(usuario.RefreshTokens.Any(a => a.IsActive))
                 {
-                    var activeRefreshToken = usuario.RefreshToken.Where(a => a.IsActive==true).FirstOrDefault();
+                    var activeRefreshToken = usuario.RefreshTokens.Where(a => a.IsActive==true).FirstOrDefault();
 
                     datosUsuarioDto.RefreshToken = activeRefreshToken.Token;
                     datosUsuarioDto.RefreshTokenExpiration = activeRefreshToken.Expires;
@@ -108,7 +108,7 @@ namespace Api.Services
                     var refreshToken = CreateRefreshToken();
                     datosUsuarioDto.RefreshToken = refreshToken.Token;
                     datosUsuarioDto.RefreshTokenExpiration = refreshToken.Expires;
-                    usuario.RefreshToken.Add(refreshToken);
+                    usuario.RefreshTokens.Add(refreshToken);
                     _unitOfWork.Usuarios.Update(usuario);
                     await _unitOfWork.SaveAsync();
                 }
@@ -176,7 +176,7 @@ namespace Api.Services
                 return datosUsuarioDto;
             }
 
-            var refreshTokenBd = usuario.RefreshToken.Single(x => x.Token == refreshToken);
+            var refreshTokenBd = usuario.RefreshTokens.Single(x => x.Token == refreshToken);
 
             if (!refreshTokenBd.IsActive)
             {
@@ -188,7 +188,7 @@ namespace Api.Services
             refreshTokenBd.Revoked = DateTime.UtcNow;
             //generamos un nuevo Refresh Token y lo guardamos en la Base de Datos
             var newRefreshToken = CreateRefreshToken();
-            usuario.RefreshToken.Add(newRefreshToken);
+            usuario.RefreshTokens.Add(newRefreshToken);
             _unitOfWork.Usuarios.Update(usuario);
             await _unitOfWork.SaveAsync();
             //Generamos un nuevo Json Web Token 😊
