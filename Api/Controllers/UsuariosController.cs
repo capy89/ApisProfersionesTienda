@@ -22,5 +22,13 @@ namespace Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost("token")]
+        public async Task<IActionResult> GetTokenAsync(LoginDto model)
+        {
+            var result=await _userService.GetTokenAsync(model);
+
+            return Ok(result);
+        }
     }
 }
