@@ -7,6 +7,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Api.Services
@@ -93,6 +94,25 @@ namespace Api.Services
                 datosUsuarioDto.Roles = usuario.Roles
                                                 .Select(u => u.Nombre)
                                                 .ToList();
+               
+                
+                if(usuario.RefreshToken.Any(a => a.IsActive))
+                {
+                    var activeRefreshToken = usuario.RefreshToken.Where(a => a.IsActive==true).FirstOrDefault();
+
+                    datosUsuarioDto.RefreshToken = activeRefreshToken.Token;
+                    datosUsuarioDto.RefreshTokenExpiration = activeRefreshToken.Expires;
+                }
+                else
+                {
+                    var refreshToken = CreateRefreshToken();
+                    datosUsuarioDto.RefreshToken = refreshToken.Token;
+                    datosUsuarioDto.RefreshTokenExpiration = refreshToken.Expires;
+                    usuario.RefreshToken.Add(refreshToken);
+                    _unitOfWork.Usuarios.Update(usuario);
+                    await _unitOfWork.SaveAsync();
+                }
+
                 return datosUsuarioDto;
             }
             datosUsuarioDto.EstaAutenticado = false;
@@ -143,6 +163,23 @@ namespace Api.Services
         }
 
 
+
+        private RefreshToken CreateRefreshToken()
+        {
+            var randomNumber = new byte[32];
+
+            using(var generator = RandomNumberGenerator.Create())
+            {
+                generator.GetBytes(randomNumber);
+
+                return new RefreshToken
+                {
+                    Token = Convert.ToBase64String(randomNumber),
+                    Expires = DateTime.UtcNow.AddDays(10),
+                    Created = DateTime.UtcNow
+                };
+            }
+        }
 
         private JwtSecurityToken CreateJwtToken(Usuario usuario)
         {

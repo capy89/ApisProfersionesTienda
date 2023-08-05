@@ -22,6 +22,7 @@ namespace Infrastructure.Repositories
         {
             return await _context.Usuarios
                 .Include(u => u.Roles)
+                .Include(u => u.RefreshToken)
                 .FirstOrDefaultAsync(u => u.Username.ToLower()==userName.ToLower());
         }
     }

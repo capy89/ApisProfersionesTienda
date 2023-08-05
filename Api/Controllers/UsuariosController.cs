@@ -27,7 +27,7 @@ namespace Api.Controllers
         public async Task<IActionResult> GetTokenAsync(LoginDto model)
         {
             var result=await _userService.GetTokenAsync(model);
-
+            SetRefreshTokenInCookie(result.RefreshToken);
             return Ok(result);
         }
 
@@ -38,5 +38,19 @@ namespace Api.Controllers
 
             return Ok(result);
         }
+
+
+
+        private void SetRefreshTokenInCookie(string refreshToken)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Expires = DateTime.UtcNow.AddDays(10)
+            };
+
+            Response.Cookies.Append("refreshToken", refreshToken, cookieOptions);
+        }
+
     }
 }
