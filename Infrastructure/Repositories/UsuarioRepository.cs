@@ -18,6 +18,14 @@ namespace Infrastructure.Repositories
             
         }
 
+        public async Task<Usuario> GetByRefreshToken(string refreshToken)
+        {
+            return await _context.Usuarios
+               .Include(u => u.Roles)
+               .Include(u => u.RefreshToken)
+               .FirstOrDefaultAsync(u => u.RefreshToken.Any(t=> t.Token==refreshToken));
+        }
+
         public async Task<Usuario> GetByUserName(string userName)
         {
             return await _context.Usuarios

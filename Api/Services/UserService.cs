@@ -162,6 +162,50 @@ namespace Api.Services
             return $"Credenciales incorrectas para el usuario {usuario.Username}.";
         }
 
+        public async Task<DatosUsuarioDto> RefreshTokenAsync(string refreshToken)
+        {
+            var datosUsuarioDto = new DatosUsuarioDto();
+
+            var usuario = await _unitOfWork.Usuarios
+                            .GetByRefreshToken(refreshToken);
+
+            if (usuario == null)
+            {
+                datosUsuarioDto.EstaAutenticado = false;
+                datosUsuarioDto.Mensaje = $"El token no pertenece a ningún usuario.";
+                return datosUsuarioDto;
+            }
+
+            var refreshTokenBd = usuario.RefreshToken.Single(x => x.Token == refreshToken);
+
+            if (!refreshTokenBd.IsActive)
+            {
+                datosUsuarioDto.EstaAutenticado = false;
+                datosUsuarioDto.Mensaje = $"El token no está activo.";
+                return datosUsuarioDto;
+            }
+            //Revocamos el Refresh Token actual y
+            refreshTokenBd.Revoked = DateTime.UtcNow;
+            //generamos un nuevo Refresh Token y lo guardamos en la Base de Datos
+            var newRefreshToken = CreateRefreshToken();
+            usuario.RefreshToken.Add(newRefreshToken);
+            _unitOfWork.Usuarios.Update(usuario);
+            await _unitOfWork.SaveAsync();
+            //Generamos un nuevo Json Web Token 😊
+            datosUsuarioDto.EstaAutenticado = true;
+            JwtSecurityToken jwtSecurityToken = CreateJwtToken(usuario);
+            datosUsuarioDto.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+            datosUsuarioDto.Email = usuario.Email;
+            datosUsuarioDto.UserName = usuario.Username;
+            datosUsuarioDto.Roles = usuario.Roles
+                                            .Select(u => u.Nombre)
+                                            .ToList();
+            datosUsuarioDto.RefreshToken = newRefreshToken.Token;
+            datosUsuarioDto.RefreshTokenExpiration = newRefreshToken.Expires;
+            return datosUsuarioDto;
+        }
+
+
 
 
         private RefreshToken CreateRefreshToken()
@@ -207,5 +251,7 @@ namespace Api.Services
                 signingCredentials: signingCredentials);
             return jwtSecurityToken;
         }
+
+        
     }
 }

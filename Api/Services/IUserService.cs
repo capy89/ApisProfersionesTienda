@@ -9,5 +9,7 @@ namespace Api.Services
         Task<DatosUsuarioDto> GetTokenAsync(LoginDto model);
 
         Task<string> AddRoleAsync(AddRoleDto model);
+
+        Task<DatosUsuarioDto> RefreshTokenAsync(string refreshToken);
     }
 }
