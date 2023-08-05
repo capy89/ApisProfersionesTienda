@@ -100,47 +100,47 @@ namespace Api.Services
             return datosUsuarioDto;
         }
 
-        //public async Task<string> AddRoleAsync(AddRoleDto model)
-        //{
+        public async Task<string> AddRoleAsync(AddRoleDto model)
+        {
 
-        //    var usuario = await _unitOfWork.Usuarios
-        //                .GetByUsernameAsync(model.Username);
+            var usuario = await _unitOfWork.Usuarios
+                        .GetByUserName(model.UserName);
 
-        //    if (usuario == null)
-        //    {
-        //        return $"No existe algún usuario registrado con la cuenta {model.Username}.";
-        //    }
-
-
-        //    var resultado = _passwordHasher.VerifyHashedPassword(usuario, usuario.Password, model.Password);
-
-        //    if (resultado == PasswordVerificationResult.Success)
-        //    {
+            if (usuario == null)
+            {
+                return $"No existe algún usuario registrado con la cuenta {model.UserName}.";
+            }
 
 
-        //        var rolExiste = _unitOfWork.Roles
-        //                                    .Find(u => u.Nombre.ToLower() == model.Role.ToLower())
-        //                                    .FirstOrDefault();
+            var resultado = _passwordHasher.VerifyHashedPassword(usuario, usuario.Password, model.Password);
 
-        //        if (rolExiste != null)
-        //        {
-        //            var usuarioTieneRol = usuario.Roles
-        //                                        .Any(u => u.Id == rolExiste.Id);
+            if (resultado == PasswordVerificationResult.Success)
+            {
 
-        //            if (usuarioTieneRol == false)
-        //            {
-        //                usuario.Roles.Add(rolExiste);
-        //                _unitOfWork.Usuarios.Update(usuario);
-        //                await _unitOfWork.SaveAsync();
-        //            }
 
-        //            return $"Rol {model.Role} agregado a la cuenta {model.Username} de forma exitosa.";
-        //        }
+                var rolExiste = _unitOfWork.Roles
+                                            .Find(u => u.Nombre.ToLower() == model.Role.ToLower())
+                                            .FirstOrDefault();
 
-        //        return $"Rol {model.Role} no encontrado.";
-        //    }
-        //    return $"Credenciales incorrectas para el usuario {usuario.Username}.";
-        //}
+                if (rolExiste != null)
+                {
+                    var usuarioTieneRol = usuario.Roles
+                                                .Any(u => u.Id == rolExiste.Id);
+
+                    if (usuarioTieneRol == false)
+                    {
+                        usuario.Roles.Add(rolExiste);
+                        _unitOfWork.Usuarios.Update(usuario);
+                        await _unitOfWork.SaveAsync();
+                    }
+
+                    return $"Rol {model.Role} agregado a la cuenta {model.UserName} de forma exitosa.";
+                }
+
+                return $"Rol {model.Role} no encontrado.";
+            }
+            return $"Credenciales incorrectas para el usuario {usuario.Username}.";
+        }
 
 
 

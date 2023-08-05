@@ -30,5 +30,13 @@ namespace Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost("addrole")]
+        public async Task<IActionResult> GetAddRoleAsync(AddRoleDto model)
+        {
+            var result = await _userService.AddRoleAsync(model);
+
+            return Ok(result);
+        }
     }
 }
