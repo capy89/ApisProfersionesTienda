@@ -46,6 +46,10 @@ namespace Infrastructure.Data.Configuration
                     j.HasKey(t => new { t.UsuarioId, t.RolId });
                 });
 
+            builder
+                .HasMany(p => p.RefreshToken)
+                .WithOne(p => p.Usuario)
+                .HasForeignKey(p => p.UsuarioId);
         }
     }
 }
