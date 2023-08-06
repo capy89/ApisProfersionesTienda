@@ -1,4 +1,5 @@
 ﻿using Api.Helpers;
+using Api.Helpers.Errors;
 using Api.Services;
 using AspNetCoreRateLimit;
 using Core.Entities;
@@ -106,6 +107,27 @@ namespace Api.Extensions
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Key"]))
                     };
                 });
+        }
+
+
+        public static void AddValidationErrors(this IServiceCollection services)
+        {
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = actionContext =>
+                {
+                    var errors = actionContext.ModelState.Where(u => u.Value.Errors.Count > 0)
+                                                        .SelectMany(u => u.Value.Errors)
+                                                        .Select(u => u.ErrorMessage).ToArray();
+
+                    var errorResponse = new ApiValidation()
+                    {
+                        Errors = errors
+                    };
+
+                    return new BadRequestObjectResult(errorResponse);
+                };
+            });
         }
 
     }

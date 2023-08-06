@@ -36,6 +36,12 @@ builder.Services.AddControllers(options =>
      options.ReturnHttpNotAcceptable = true;
  }).AddXmlSerializerFormatters();
 
+
+//Configuration for managed the errors from model state
+
+builder.Services.AddValidationErrors();
+
+
 builder.Services.AddDbContext<TiendaContext>(options =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -48,6 +54,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+//Middle ware personalized for mange the exceptions
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseIpRateLimiting();
