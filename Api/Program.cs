@@ -57,6 +57,9 @@ var app = builder.Build();
 //Middle ware personalized for mange the exceptions
 app.UseMiddleware<ExceptionMiddleware>();
 
+//This is to manage errores of endpoints no existens
+app.UseStatusCodePagesWithReExecute("/errors/{0}");
+
 app.UseIpRateLimiting();
 
 // Configure the HTTP request pipeline.
