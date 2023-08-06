@@ -1,4 +1,5 @@
 using Api.Extensions;
+using Api.Helpers.Errors;
 using AspNetCoreRateLimit;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -46,6 +47,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseIpRateLimiting();
 
